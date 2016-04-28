@@ -3,4 +3,4 @@
 
 window.React = require('react');
 window.ReactDOM = require('react-dom');
-window.Hello = require('./components/hello');
+window.App = require('./components/app');
