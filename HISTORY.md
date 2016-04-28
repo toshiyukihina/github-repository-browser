@@ -1,4 +1,4 @@
 0.0.1 / 2016/04/28
 ==================
 
-    * Initial Release
+  * Initial Release
