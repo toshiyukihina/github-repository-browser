@@ -13,6 +13,7 @@ class App extends React.Component {
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleClear = this.handleClear.bind(this);
   }
 
   handleSubmit(username) {
@@ -26,10 +27,14 @@ class App extends React.Component {
            });
   }
 
+  handleClear() {
+    this.setState({repositories: []});
+  }
+
   render() {
     return (
       <div>
-        <SearchBox onSubmit={this.handleSubmit} />
+        <SearchBox onSubmit={this.handleSubmit} onClear={this.handleClear} />
         <RepositoryList repositories={this.state.repositories} />
       </div>
     );
