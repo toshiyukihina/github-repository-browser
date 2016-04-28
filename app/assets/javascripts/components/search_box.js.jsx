@@ -28,7 +28,7 @@ class SearchBox extends React.Component {
       <div>
         <form onSubmit={this.handleSubmit}>
           <input type="text" onChange={this.handleChange} placeholder="Enter username" />
-          <input type="submit" value="Update" />
+          <input type="submit" value="Update" disabled={!this.state.username} />
         </form>
       </div>
     );
