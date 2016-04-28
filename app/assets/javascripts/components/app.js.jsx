@@ -1,6 +1,7 @@
 import React from 'react';
 import SearchBox from './search_box';
 import RepositoryList from './repository_list';
+import request from 'superagent';
 
 class App extends React.Component {
 
@@ -8,19 +9,21 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      repositories: [
-        { id: '1', name: 'angular-ui-router', description: 'A sample program using angular-ui-router.' },
-        { id: '2', name: 'angular-chat', description: 'A chat program using Angular.js.' },
-        { id: '3', name: 'hello-redux', description: 'My first redux.' },
-        { id: '4', name: 'dotfiles', description: 'My dotfiles.' }
-      ]
+      repositories: []
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleSubmit(username) {
-    // TODO: Fetch repository list via Github API
+    request.get(`https://api.github.com/users/${username}/repos`)
+           .end((err, res) => {
+             if (res.ok) {
+               this.setState({repositories: res.body});
+             } else {
+               console.error(err);
+             }
+           });
   }
 
   render() {
