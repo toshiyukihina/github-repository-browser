@@ -1,18 +1,12 @@
 import React from 'react';
 import Repository from './repository';
-import { Table } from 'react-bootstrap';
+import { Table, Alert, Glyphicon } from 'react-bootstrap';
 
 class RepositoryList extends React.Component {
 
-  render() {
-    const repositoryNodes = this.props.repositories.map((repository) => {
-      return (
-        <Repository
-            key={repository.id}
-            name={repository.name}
-            description={repository.description}
-        />
-      );
+  repositoryNodes(repos) {
+    const repositoryNodes = repos.map((repo) => {
+      return (<Repository key={repo.id} name={repo.name} description={repo.description} />);
     });
 
     return (
@@ -28,6 +22,20 @@ class RepositoryList extends React.Component {
         </tbody>
       </Table>
     );
+  }
+
+  noRepositoryAlert() {
+    return (
+      <Alert bsStyle="info">
+        <Glyphicon glyph="info-sign" />{' '}
+        No repositories are exist.
+      </Alert>
+    )
+  }
+
+  render() {
+    const repos = this.props.repositories;
+    return repos.length > 0 ? this.repositoryNodes(repos) : this.noRepositoryAlert();
   }
   
 }
