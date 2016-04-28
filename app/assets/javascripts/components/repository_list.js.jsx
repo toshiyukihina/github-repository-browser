@@ -16,7 +16,7 @@ class RepositoryList extends React.Component {
     });
 
     return (
-      <Table responsive>
+      <Table responsive striped condensed hover>
         <thead>
           <tr>
             <th>Name</th>

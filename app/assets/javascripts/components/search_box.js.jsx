@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, FormGroup, FormControl, Button } from 'react-bootstrap';
+import { Form, FormGroup, FormControl, Button, Col } from 'react-bootstrap';
 
 class SearchBox extends React.Component {
 
@@ -37,16 +37,17 @@ class SearchBox extends React.Component {
 
   render() {
     return (
-      <Form inline onSubmit={this.handleSubmit}>
-        <FormGroup>
-          <FormControl type="text" value={this.state.username} onChange={this.handleChange} placeholder="Enter username" />
-        </FormGroup>
-        <Button type="submit" disabled={!this.state.username} bsStyle="primary">
-          Update
-        </Button>
-        <Button type="button" onClick={this.handleClear}>
-          Clear
-        </Button>
+      <Form onSubmit={this.handleSubmit}>
+        <Col sm={10}>
+          <FormGroup>
+            <FormControl type="text" value={this.state.username} onChange={this.handleChange} placeholder="Enter username" />
+          </FormGroup>
+        </Col>
+        <Col sm={2}>
+          <Button type="submit" disabled={!this.state.username} bsStyle="primary">Update</Button>
+          {' '}
+          <Button type="button" onClick={this.handleClear}>Clear</Button>
+        </Col>
       </Form>
     );
   }
