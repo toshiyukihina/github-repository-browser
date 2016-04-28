@@ -1,5 +1,6 @@
 import React from 'react';
 import Repository from './repository';
+import { Table } from 'react-bootstrap';
 
 class RepositoryList extends React.Component {
 
@@ -15,19 +16,17 @@ class RepositoryList extends React.Component {
     });
 
     return (
-      <div>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            {repositoryNodes}
-          </tbody>
-        </table>
-      </div>
+      <Table responsive>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {repositoryNodes}
+        </tbody>
+      </Table>
     );
   }
   
