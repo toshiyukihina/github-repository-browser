@@ -1,7 +1,9 @@
 import React from 'react';
+import Header from './header';
 import SearchBox from './search_box';
 import RepositoryList from './repository_list';
 import request from 'superagent';
+import { Grid, Row } from 'react-bootstrap';
 
 class App extends React.Component {
 
@@ -34,8 +36,15 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <SearchBox onSubmit={this.handleSubmit} onClear={this.handleClear} />
-        <RepositoryList repositories={this.state.repositories} />
+        <Header />
+        <Grid>
+          <Row>
+            <SearchBox onSubmit={this.handleSubmit} onClear={this.handleClear} />
+          </Row>
+          <Row>
+            <RepositoryList repositories={this.state.repositories} />
+          </Row>
+        </Grid>
       </div>
     );
   }
