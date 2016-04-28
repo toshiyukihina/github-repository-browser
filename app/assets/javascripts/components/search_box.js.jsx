@@ -11,24 +11,36 @@ class SearchBox extends React.Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleClear = this.handleClear.bind(this);
   }
 
   handleSubmit(e) {
     e.preventDefault();
 
-    this.props.onSubmit(this.state.username);
+    const username = this.state.username.trim();
+    if (!username) {
+      return;
+    }
+    
+    this.props.onSubmit(username);
   }
 
   handleChange(e) {
-    this.setState({username: e.target.value});
+    this.setState({username: e.target.value.trim()});
+  }
+
+  handleClear(e) {
+    this.props.onClear();
+    this.setState({username: ''});
   }
 
   render() {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          <input type="text" onChange={this.handleChange} placeholder="Enter username" />
+          <input type="text" value={this.state.username} onChange={this.handleChange} placeholder="Enter username" />
           <input type="submit" value="Update" disabled={!this.state.username} />
+          <input type="button" value="Clear" onClick={this.handleClear} />
         </form>
       </div>
     );
@@ -37,7 +49,8 @@ class SearchBox extends React.Component {
 }
 
 SearchBox.PropTypes = {
-  onSubmit: React.PropTypes.func.isRequired
+  onSubmit: React.PropTypes.func.isRequired,
+  onClear: React.PropTypes.func.isRequired
 };
 
 export default SearchBox;
