@@ -22,12 +22,13 @@ class SearchBox extends React.Component {
     if (!username) {
       return;
     }
-    
+
+    this.setState({username: username});
     this.props.onSubmit(username);
   }
 
   handleChange(e) {
-    this.setState({username: e.target.value.trim()});
+    this.setState({username: e.target.value});
   }
 
   handleClear(e) {
