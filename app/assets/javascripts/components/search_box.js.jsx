@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, FormGroup, FormControl, Button, Col } from 'react-bootstrap';
+import { Form, FormGroup, FormControl, Button, Col, Glyphicon } from 'react-bootstrap';
 
 class SearchBox extends React.Component {
 
@@ -22,12 +22,13 @@ class SearchBox extends React.Component {
     if (!username) {
       return;
     }
-    
+
+    this.setState({username: username});
     this.props.onSubmit(username);
   }
 
   handleChange(e) {
-    this.setState({username: e.target.value.trim()});
+    this.setState({username: e.target.value});
   }
 
   handleClear(e) {
@@ -44,9 +45,14 @@ class SearchBox extends React.Component {
           </FormGroup>
         </Col>
         <Col sm={2}>
-          <Button type="submit" disabled={!this.state.username} bsStyle="primary">Update</Button>
-          {' '}
-          <Button type="button" onClick={this.handleClear}>Clear</Button>
+        <Button type="submit" disabled={!this.state.username} bsStyle="primary">
+          <Glyphicon glyph="refresh" />{' '}
+          Update
+        </Button>
+        {' '}
+        <Button type="button" onClick={this.handleClear}>
+          Clear
+        </Button>
         </Col>
       </Form>
     );

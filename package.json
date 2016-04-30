@@ -1,8 +1,12 @@
 {
   "name": "github-repository-browser",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Github repository browser",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:toshiyukihina/github-repository-browser.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

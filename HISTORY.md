@@ -1,3 +1,8 @@
+0.0.6 / 2016/04/30
+==================
+
+  * Add to show an error message if fetching repositories is failed.
+
 0.0.5 / 2016/04/29
 ==================
 
