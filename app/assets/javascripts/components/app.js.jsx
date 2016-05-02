@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from './header';
 import SearchBox from './search_box';
+import Pagination from './pagination';
 import RepositoryList from './repository_list';
 import request from 'superagent';
 import { Grid, Row, Alert, Glyphicon } from 'react-bootstrap';
@@ -72,7 +73,13 @@ class App extends React.Component {
             <SearchBox onSubmit={this.handleSubmit} onClear={this.handleClear} />
           </Row>
           <Row>
+            <Pagination />
+          </Row>
+          <Row>
             {this.resultNode()}
+          </Row>
+          <Row>
+            <Pagination />
           </Row>
         </Grid>
       </div>
