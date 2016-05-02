@@ -17,6 +17,7 @@ class App extends React.Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleClear = this.handleClear.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
   }
 
   handleSubmit(username) {
@@ -28,6 +29,10 @@ class App extends React.Component {
 
   handleClear() {
     this.setState({res: null});
+  }
+
+  handleSelect(eventKey) {
+    console.log(`* eventKey=${eventKey}`);
   }
 
   repositoryList(res) {
@@ -73,7 +78,7 @@ class App extends React.Component {
             <SearchBox onSubmit={this.handleSubmit} onClear={this.handleClear} />
           </Row>
           <Row>
-            <PaginationBox />
+            <PaginationBox onSelect={this.handleSelect} />
           </Row>
           <Row>
             {this.resultNode()}

@@ -14,6 +14,8 @@ class PaginationBox extends React.Component {
   }
 
   handleSelect(eventKey) {
+    this.props.onSelect(eventKey);
+
     this.setState({activePage: eventKey});
   }
 
