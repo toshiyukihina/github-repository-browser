@@ -29,7 +29,7 @@ class PaginationBox extends React.Component {
           ellipsis
           boundaryLinks
           bsSize="medium"
-          items={10}
+          items={5}
           activePage={this.state.activePage}
           onSelect={this.handleSelect} />
     );

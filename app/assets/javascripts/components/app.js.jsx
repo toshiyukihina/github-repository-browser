@@ -78,10 +78,10 @@ class App extends React.Component {
             <SearchBox onSubmit={this.handleSubmit} onClear={this.handleClear} />
           </Row>
           <Row>
-            <PaginationBox onSelect={this.handleSelect} />
-          </Row>
-          <Row>
             {this.resultNode()}
+          </Row>
+          <Row style={{textAlign: 'center'}}>
+            <PaginationBox onSelect={this.handleSelect} />
           </Row>
         </Grid>
       </div>
