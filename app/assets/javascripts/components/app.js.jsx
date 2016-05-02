@@ -12,6 +12,11 @@ class App extends React.Component {
     super(props);
 
     this.state = {
+      queryParams: {
+        username: '',
+        page: 1,
+        perPage: 10
+      },
       res: null
     };
 
@@ -20,19 +25,49 @@ class App extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
   }
 
-  handleSubmit(username) {
-    request.get(`https://api.github.com/users/${username}/repos`)
+  fetchRepositories(params) {
+    request.get(`https://api.github.com/users/${params.username}/repos?page=${params.page}&per_page=${params.perPage}`)
            .end((err, res) => {
-             this.setState({res: res});
+             this.setState({
+               queryParams: {
+                 username: params.username,
+                 page: params.page,
+                 perPage: params.perPage
+               },
+               res: res
+             });
            });
   }
 
+  handleSubmit(username) {
+    const { page, perPage } = this.state.queryParams;
+
+    this.fetchRepositories({
+      username: username,
+      page: page,
+      perPage: perPage
+    });
+  }
+
   handleClear() {
-    this.setState({res: null});
+    this.setState({
+      queryParams: {
+        username: '',
+        page: 1,
+        perPage: 10
+      },
+      res: null
+    });
   }
 
   handleSelect(eventKey) {
-    console.log(`* eventKey=${eventKey}`);
+    const { username, perPage } = this.state.queryParams;
+
+    this.fetchRepositories({
+      username: username,
+      page: eventKey,
+      perPage: perPage
+    });
   }
 
   repositoryList(res) {
