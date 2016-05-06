@@ -35,7 +35,12 @@ class App extends React.Component {
       return -1;
     }
       
-    const links = res.headers['link'].split(',');
+    const linkHeader = res.headers['link'];
+    if (!linkHeader) {
+      return -1;
+    }
+
+    const links = linkHeader.split(',');
     for (const link of links) {
       const spl = link.split(';');
       const last = spl[1].trim().match(/last/)
@@ -101,55 +106,52 @@ class App extends React.Component {
     });
   }
 
-  repositoryList(res) {
-    return (<RepositoryList repositories={res.body} />);
-  }
-
-  errorAlert(res) {
-    return (
-      <Alert bsStyle="danger">
-        <Glyphicon glyph="exclamation-sign"></Glyphicon>{' '}
-        {`${res.statusText} (${res.status})`}
-      </Alert>
-    );
-  }
-
-  promptAlert() {
-    return (
-      <Alert bsStyle="info">
-        Enter a valid username and click update button.
-      </Alert>
-    );
-  }
-
-  queryResult() {
-    const res = this.state.res
-    if (res) {
-      if (res.ok) {
-        return this.repositoryList(res);
-      } else {
-        return this.errorAlert(res);
-      }
-    } else {
-      return this.promptAlert();
-    }
-  }
-
-  paginationBox() {
-    const res = this.state.res;
-    if (res && res.ok) {
-      return <PaginationBox onSelect={this.handleSelect} items={this.state.pageParams.items} />;
-    }
-  }
-
   render() {
+    const queryResult = () => {
+      const repositoryList = (res) => {
+        return (<RepositoryList repositories={res.body} />);
+      };
+
+      const errorAlert = (res) => {
+        return (
+          <Alert bsStyle="danger">
+            <Glyphicon glyph="exclamation-sign"></Glyphicon>{' '}
+            {`${res.statusText} (${res.status})`}
+          </Alert>
+        );
+      };
+      
+      const promptAlert = (res) => {
+        return (
+          <Alert bsStyle="info">
+            Enter a valid username and click update button.
+          </Alert>
+        );
+      };
+
+      const res = this.state.res
+      if (res) {
+        return res.ok ? repositoryList(res) : errorAlert(res);
+      } else {
+        return promptAlert();
+      }
+    };
+    
+    const paginationBox = () => {
+      const res = this.state.res;
+      if (res && res.ok && res.body.length > 0) {
+        // Show 'PaginationBox' only if some repositories exist.
+        return <PaginationBox onSelect={this.handleSelect} items={this.state.pageParams.items} />;
+      }
+    };
+    
     return (
       <div>
         <Header />
         <Grid>
           <Row><SearchBox onSubmit={this.handleSubmit} onClear={this.handleClear} /></Row>
-          <Row>{this.queryResult()}</Row>
-          <Row style={{textAlign: 'center'}}>{this.paginationBox()}</Row>
+          <Row>{queryResult()}</Row>
+          <Row style={{textAlign: 'center'}}>{paginationBox()}</Row>
         </Grid>
       </div>
     );
