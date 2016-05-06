@@ -57,31 +57,62 @@ class App extends React.Component {
   }
 
   fetchRepositories(params) {
-    request.get(`https://api.github.com/users/${params.username}/repos?page=${params.page}&per_page=${params.perPage}`)
-           .end((err, res) => {
-             const state = {
-               queryParams: {
-                 username: params.username,
-                 page: params.page,
-                 perPage: params.perPage
-               },
-               queryResult: res
-             };
+    const promise = new Promise((resolve, reject) => {
+      request.get(`https://api.github.com/users/${params.username}/repos?page=${params.page}&per_page=${params.perPage}`)
+             .end((err, res) => {
+               res.ok ? resolve(res) : reject(res);
+             });
+    });
 
-             const lastPage = this.getLastPage(res);
-             if (lastPage > 0) {
-               state.pageParams = { items: lastPage };
-             }
+    return promise;
+  }
 
-             this.setState(state);
-           });
+  onQuerySucceeded(params, res) {
+    const state = {
+      queryParams: params,
+      queryResult: res
+    };
+
+    const lastPage = this.getLastPage(res);
+    if (lastPage > 0) {
+      state.pageParams = { items: lastPage };
+    }
+
+    this.setState(state);
+  }
+
+  onQueryFailed(res) {
+    this.setState({ queryResult: res });
   }
 
   handleQueryByUsername(username) {
-    let queryParams = this.state.queryParams;
-    queryParams.username = username;
+    let params = this.state.queryParams;
+    params.username = username;
 
-    this.fetchRepositories(queryParams);
+    this.fetchRepositories(params)
+        .then((res) => {
+          this.onQuerySucceeded(params, res);
+        })
+        .catch((res) => {
+          this.onQueryFailed(res);
+        });
+  }
+
+  handlePageChange(eventKey) {
+    let params = this.state.queryParams;
+    params.page = eventKey;
+
+    this.fetchRepositories(params)
+        .then((res) => {
+          this.onQuerySucceeded(params, res);
+        })
+        .catch((res) => {
+          this.onQueryFailed(res);
+        });
+  }
+
+  handlePerPageChange(perPage) {
+    console.log(`perPage changed: ${perPage}`);
   }
 
   handleClearQueryResult() {
@@ -92,17 +123,6 @@ class App extends React.Component {
       queryParams: queryParams,
       queryResult: null
     });
-  }
-
-  handlePageChange(eventKey) {
-    let queryParams = this.state.queryParams;
-    queryParams.page = eventKey;
-
-    this.fetchRepositories(queryParams);
-  }
-
-  handlePerPageChange(perPage) {
-    console.log(`perPage changed: ${perPage}`);
   }
 
   render() {
