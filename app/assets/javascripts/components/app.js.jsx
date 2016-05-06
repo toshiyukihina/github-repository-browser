@@ -7,6 +7,7 @@ import RepositoryList from './repository_list';
 import request from 'superagent';
 import url from 'url';
 import querystring from 'querystring';
+import Promise from 'bluebird';
 import { Grid, Row, Col, Alert, Glyphicon } from 'react-bootstrap';
 
 class App extends React.Component {
@@ -57,14 +58,12 @@ class App extends React.Component {
   }
 
   fetchRepositories(params) {
-    const promise = new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       request.get(`https://api.github.com/users/${params.username}/repos?page=${params.page}&per_page=${params.perPage}`)
              .end((err, res) => {
                res.ok ? resolve(res) : reject(res);
              });
     });
-
-    return promise;
   }
 
   onQuerySucceeded(params, res) {
@@ -85,34 +84,39 @@ class App extends React.Component {
     this.setState({ queryResult: res });
   }
 
-  handleQueryByUsername(username) {
-    let params = this.state.queryParams;
-    params.username = username;
-
+  updateRespositories(params) {
     this.fetchRepositories(params)
         .then((res) => {
           this.onQuerySucceeded(params, res);
         })
         .catch((res) => {
           this.onQueryFailed(res);
+        })
+        .finally(() => {
+          console.log('done');
         });
+  }
+
+  handleQueryByUsername(username) {
+    let params = this.state.queryParams;
+    params.username = username;
+
+    this.updateRespositories(params);
   }
 
   handlePageChange(eventKey) {
     let params = this.state.queryParams;
     params.page = eventKey;
 
-    this.fetchRepositories(params)
-        .then((res) => {
-          this.onQuerySucceeded(params, res);
-        })
-        .catch((res) => {
-          this.onQueryFailed(res);
-        });
+    this.updateRespositories(params);
   }
 
   handlePerPageChange(perPage) {
-    console.log(`perPage changed: ${perPage}`);
+    let params = this.state.queryParams;
+    params.page = 1;
+    params.perPage = perPage;
+
+    this.updateRespositories(params);
   }
 
   handleClearQueryResult() {
