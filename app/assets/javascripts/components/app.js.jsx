@@ -23,7 +23,7 @@ class App extends React.Component {
       pageParams: {
         items: 10
       },
-      res: null
+      queryResult: null
     };
 
     this.handleQueryByUsername = this.handleQueryByUsername.bind(this);
@@ -65,7 +65,7 @@ class App extends React.Component {
                  page: params.page,
                  perPage: params.perPage
                },
-               res: res
+               queryResult: res
              };
 
              const lastPage = this.getLastPage(res);
@@ -90,7 +90,7 @@ class App extends React.Component {
     
     this.setState({
       queryParams: queryParams,
-      res: null
+      queryResult: null
     });
   }
 
@@ -128,7 +128,7 @@ class App extends React.Component {
         );
       };
 
-      const res = this.state.res
+      const res = this.state.queryResult
       if (res) {
         return res.ok ? repositoryList(res) : errorAlert(res);
       } else {
@@ -137,7 +137,7 @@ class App extends React.Component {
     };
     
     const paginationBox = () => {
-      const res = this.state.res;
+      const res = this.state.queryResult;
       if (res && res.ok && res.body.length > 0) {
         // Show 'PaginationBox' only if some repositories exist.
         return <PaginationBox onSelect={this.handlePageChange} items={this.state.pageParams.items} />;
