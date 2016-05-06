@@ -7,7 +7,7 @@ class PaginationBox extends React.Component {
     super(props);
     
     this.state = {
-      activePage: 1
+      activePage: props.activePage
     };
 
     this.handleSelect = this.handleSelect.bind(this);
@@ -26,15 +26,20 @@ class PaginationBox extends React.Component {
           next
           first
           last
-          ellipsis
           boundaryLinks
           bsSize="medium"
-          items={5}
+          items={this.props.items}
+          maxButtons={5}
           activePage={this.state.activePage}
           onSelect={this.handleSelect} />
     );
   }
 
 }
+
+PaginationBox.defaultProps = {
+  activePage: 1,
+  items: 5
+};
 
 export default PaginationBox;
