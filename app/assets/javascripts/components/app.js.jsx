@@ -25,9 +25,9 @@ class App extends React.Component {
       res: null
     };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleClear = this.handleClear.bind(this);
-    this.handleSelect = this.handleSelect.bind(this);
+    this.handleQueryByUsername = this.handleQueryByUsername.bind(this);
+    this.handleClearQueryResult = this.handleClearQueryResult.bind(this);
+    this.handlePageChange = this.handlePageChange.bind(this);
   }
 
   getLastPage(res) {
@@ -75,33 +75,28 @@ class App extends React.Component {
            });
   }
 
-  handleSubmit(username) {
-    const { page, perPage } = this.state.queryParams;
+  handleQueryByUsername(username) {
+    let queryParams = this.state.queryParams;
+    queryParams.username = username;
 
-    this.fetchRepositories({
-      username: username,
-      page: page,
-      perPage: perPage
-    });
+    this.fetchRepositories(queryParams);
   }
 
-  handleClear() {
+  handleClearQueryResult() {
+    let queryParams = this.state.queryParams;
+    queryParams.username = '';
+    
     this.setState({
-      queryParams: {
-        username: ''
-      },
+      queryParams: queryParams,
       res: null
     });
   }
 
-  handleSelect(eventKey) {
-    const { username, perPage } = this.state.queryParams;
+  handlePageChange(eventKey) {
+    let queryParams = this.state.queryParams;
+    queryParams.page = eventKey;
 
-    this.fetchRepositories({
-      username: username,
-      page: eventKey,
-      perPage: perPage
-    });
+    this.fetchRepositories(queryParams);
   }
 
   render() {
@@ -139,7 +134,7 @@ class App extends React.Component {
       const res = this.state.res;
       if (res && res.ok && res.body.length > 0) {
         // Show 'PaginationBox' only if some repositories exist.
-        return <PaginationBox onSelect={this.handleSelect} items={this.state.pageParams.items} />;
+        return <PaginationBox onSelect={this.handlePageChange} items={this.state.pageParams.items} />;
       }
     };
     
@@ -147,7 +142,7 @@ class App extends React.Component {
       <div>
         <Header />
         <Grid>
-          <Row><SearchBox onSubmit={this.handleSubmit} onClear={this.handleClear} /></Row>
+          <Row><SearchBox onSubmit={this.handleQueryByUsername} onClear={this.handleClearQueryResult} /></Row>
           <Row>{queryResult()}</Row>
           <Row style={{textAlign: 'center'}}>{paginationBox()}</Row>
         </Grid>
