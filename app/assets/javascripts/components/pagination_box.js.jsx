@@ -7,7 +7,7 @@ class PaginationBox extends React.Component {
     super(props);
     
     this.state = {
-      activePage: props.activePage
+      activePage: 1
     };
 
     this.handleSelect = this.handleSelect.bind(this);
@@ -38,8 +38,7 @@ class PaginationBox extends React.Component {
 }
 
 PaginationBox.defaultProps = {
-  activePage: 1,
-  items: 5
+  items: 10
 };
 
 export default PaginationBox;
