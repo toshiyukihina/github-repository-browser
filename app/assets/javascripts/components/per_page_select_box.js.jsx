@@ -22,7 +22,7 @@ class PerPageSelectBox extends React.Component {
     
     return (
       <FormGroup controlId="perPageSelect">
-        <FormControl componentClass="select" placeholder="select" onChange={this.onChange}>
+        <FormControl componentClass="select" placeholder="select" onChange={this.onChange} disabled={this.props.disabled}>
           {options()}
         </FormControl>
       </FormGroup>

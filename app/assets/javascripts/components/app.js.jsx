@@ -24,7 +24,8 @@ class App extends React.Component {
       pageParams: {
         items: 10
       },
-      queryResult: null
+      queryResult: null,
+      updating: false
     };
 
     this.handleQueryByUsername = this.handleQueryByUsername.bind(this);
@@ -85,6 +86,8 @@ class App extends React.Component {
   }
 
   updateRespositories(params) {
+    this.setState({ updating: true });
+    
     this.fetchRepositories(params)
         .then((res) => {
           this.onQuerySucceeded(params, res);
@@ -93,7 +96,7 @@ class App extends React.Component {
           this.onQueryFailed(res);
         })
         .finally(() => {
-          console.log('done');
+          this.setState({ updating: false });
         });
   }
 
@@ -172,14 +175,20 @@ class App extends React.Component {
       <div>
         <Header />
         <Grid>
-          <Row><SearchBox onSubmit={this.handleQueryByUsername} onClear={this.handleClearQueryResult} /></Row>
+          <Row>
+            <SearchBox onSubmit={this.handleQueryByUsername} onClear={this.handleClearQueryResult} disabled={this.state.updating} />
+          </Row>
           <Row>
             <Col md={2}>
-              <PerPageSelectBox onChange={this.handlePerPageChange} />
+              <PerPageSelectBox onChange={this.handlePerPageChange} disabled={this.state.updating} />
             </Col>
           </Row>
-          <Row>{queryResult()}</Row>
-          <Row style={{textAlign: 'center'}}>{paginationBox()}</Row>
+          <Row>
+            {queryResult()}
+          </Row>
+          <Row style={{textAlign: 'center'}}>
+            {paginationBox()}
+          </Row>
         </Grid>
       </div>
     );
