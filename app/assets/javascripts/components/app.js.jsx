@@ -88,9 +88,7 @@ class App extends React.Component {
   handleClear() {
     this.setState({
       queryParams: {
-        username: '',
-        page: 1,
-        perPage: 10
+        username: ''
       },
       res: null
     });
