@@ -1,12 +1,13 @@
 import React from 'react';
 import Header from './header';
 import SearchBox from './search_box';
+import PerPageSelectBox from './per_page_select_box';
 import PaginationBox from './pagination_box';
 import RepositoryList from './repository_list';
 import request from 'superagent';
 import url from 'url';
 import querystring from 'querystring';
-import { Grid, Row, Alert, Glyphicon } from 'react-bootstrap';
+import { Grid, Row, Col, Alert, Glyphicon } from 'react-bootstrap';
 
 class App extends React.Component {
 
@@ -28,6 +29,7 @@ class App extends React.Component {
     this.handleQueryByUsername = this.handleQueryByUsername.bind(this);
     this.handleClearQueryResult = this.handleClearQueryResult.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
+    this.handlePerPageChange = this.handlePerPageChange.bind(this);
   }
 
   getLastPage(res) {
@@ -99,6 +101,10 @@ class App extends React.Component {
     this.fetchRepositories(queryParams);
   }
 
+  handlePerPageChange(perPage) {
+    console.log(`perPage changed: ${perPage}`);
+  }
+
   render() {
     const queryResult = () => {
       const repositoryList = (res) => {
@@ -143,6 +149,11 @@ class App extends React.Component {
         <Header />
         <Grid>
           <Row><SearchBox onSubmit={this.handleQueryByUsername} onClear={this.handleClearQueryResult} /></Row>
+          <Row>
+            <Col md={2}>
+              <PerPageSelectBox onChange={this.handlePerPageChange} />
+            </Col>
+          </Row>
           <Row>{queryResult()}</Row>
           <Row style={{textAlign: 'center'}}>{paginationBox()}</Row>
         </Grid>
