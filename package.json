@@ -1,6 +1,6 @@
 {
   "name": "github-repository-browser",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Github repository browser",
   "main": "index.js",
   "repository": {
