@@ -1,12 +1,14 @@
 import React from 'react';
 import Header from './header';
 import SearchBox from './search_box';
+import PerPageSelectBox from './per_page_select_box';
 import PaginationBox from './pagination_box';
 import RepositoryList from './repository_list';
 import request from 'superagent';
 import url from 'url';
 import querystring from 'querystring';
-import { Grid, Row, Alert, Glyphicon } from 'react-bootstrap';
+import Promise from 'bluebird';
+import { Grid, Row, Col, Alert, Glyphicon } from 'react-bootstrap';
 
 class App extends React.Component {
 
@@ -22,12 +24,14 @@ class App extends React.Component {
       pageParams: {
         items: 10
       },
-      res: null
+      queryResult: null,
+      updating: false
     };
 
     this.handleQueryByUsername = this.handleQueryByUsername.bind(this);
     this.handleClearQueryResult = this.handleClearQueryResult.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
+    this.handlePerPageChange = this.handlePerPageChange.bind(this);
   }
 
   getLastPage(res) {
@@ -55,31 +59,67 @@ class App extends React.Component {
   }
 
   fetchRepositories(params) {
-    request.get(`https://api.github.com/users/${params.username}/repos?page=${params.page}&per_page=${params.perPage}`)
-           .end((err, res) => {
-             const state = {
-               queryParams: {
-                 username: params.username,
-                 page: params.page,
-                 perPage: params.perPage
-               },
-               res: res
-             };
+    return new Promise((resolve, reject) => {
+      request.get(`https://api.github.com/users/${params.username}/repos?page=${params.page}&per_page=${params.perPage}`)
+             .end((err, res) => {
+               res.ok ? resolve(res) : reject(res);
+             });
+    });
+  }
 
-             const lastPage = this.getLastPage(res);
-             if (lastPage > 0) {
-               state.pageParams = { items: lastPage };
-             }
+  onQuerySucceeded(params, res) {
+    const state = {
+      queryParams: params,
+      queryResult: res
+    };
 
-             this.setState(state);
-           });
+    const lastPage = this.getLastPage(res);
+    if (lastPage > 0) {
+      state.pageParams = { items: lastPage };
+    }
+
+    this.setState(state);
+  }
+
+  onQueryFailed(res) {
+    this.setState({ queryResult: res });
+  }
+
+  updateRespositories(params) {
+    this.setState({ updating: true });
+    
+    this.fetchRepositories(params)
+        .then((res) => {
+          this.onQuerySucceeded(params, res);
+        })
+        .catch((res) => {
+          this.onQueryFailed(res);
+        })
+        .finally(() => {
+          this.setState({ updating: false });
+        });
   }
 
   handleQueryByUsername(username) {
-    let queryParams = this.state.queryParams;
-    queryParams.username = username;
+    let params = this.state.queryParams;
+    params.username = username;
 
-    this.fetchRepositories(queryParams);
+    this.updateRespositories(params);
+  }
+
+  handlePageChange(eventKey) {
+    let params = this.state.queryParams;
+    params.page = eventKey;
+
+    this.updateRespositories(params);
+  }
+
+  handlePerPageChange(perPage) {
+    let params = this.state.queryParams;
+    params.page = 1;
+    params.perPage = perPage;
+
+    this.updateRespositories(params);
   }
 
   handleClearQueryResult() {
@@ -88,15 +128,8 @@ class App extends React.Component {
     
     this.setState({
       queryParams: queryParams,
-      res: null
+      queryResult: null
     });
-  }
-
-  handlePageChange(eventKey) {
-    let queryParams = this.state.queryParams;
-    queryParams.page = eventKey;
-
-    this.fetchRepositories(queryParams);
   }
 
   render() {
@@ -122,7 +155,7 @@ class App extends React.Component {
         );
       };
 
-      const res = this.state.res
+      const res = this.state.queryResult
       if (res) {
         return res.ok ? repositoryList(res) : errorAlert(res);
       } else {
@@ -131,7 +164,7 @@ class App extends React.Component {
     };
     
     const paginationBox = () => {
-      const res = this.state.res;
+      const res = this.state.queryResult;
       if (res && res.ok && res.body.length > 0) {
         // Show 'PaginationBox' only if some repositories exist.
         return <PaginationBox onSelect={this.handlePageChange} items={this.state.pageParams.items} />;
@@ -142,9 +175,20 @@ class App extends React.Component {
       <div>
         <Header />
         <Grid>
-          <Row><SearchBox onSubmit={this.handleQueryByUsername} onClear={this.handleClearQueryResult} /></Row>
-          <Row>{queryResult()}</Row>
-          <Row style={{textAlign: 'center'}}>{paginationBox()}</Row>
+          <Row>
+            <SearchBox onSubmit={this.handleQueryByUsername} onClear={this.handleClearQueryResult} disabled={this.state.updating} />
+          </Row>
+          <Row>
+            <Col md={2}>
+              <PerPageSelectBox onChange={this.handlePerPageChange} disabled={this.state.updating} />
+            </Col>
+          </Row>
+          <Row>
+            {queryResult()}
+          </Row>
+          <Row style={{textAlign: 'center'}}>
+            {paginationBox()}
+          </Row>
         </Grid>
       </div>
     );
