@@ -41,18 +41,24 @@ class SearchBox extends React.Component {
       <Form onSubmit={this.handleSubmit}>
         <Col sm={10}>
           <FormGroup>
-            <FormControl type="text" value={this.state.username} onChange={this.handleChange} placeholder="Enter username" />
+            <FormControl
+                type="text"
+                value={this.state.username}
+                onChange={this.handleChange}
+                placeholder="Enter username"
+                disabled={this.props.disabled}
+            />
           </FormGroup>
         </Col>
         <Col sm={2}>
-        <Button type="submit" disabled={!this.state.username} bsStyle="primary">
-          <Glyphicon glyph="refresh" />{' '}
-          Update
-        </Button>
-        {' '}
-        <Button type="button" onClick={this.handleClear}>
-          Clear
-        </Button>
+          <Button type="submit" disabled={!this.state.username || this.props.disabled} bsStyle="primary">
+            <Glyphicon glyph="refresh" />{' '}
+            Update
+          </Button>
+          {' '}
+          <Button type="button" onClick={this.handleClear} disabled={this.props.disabled}>
+            Clear
+          </Button>
         </Col>
       </Form>
     );
